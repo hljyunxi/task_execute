@@ -1,0 +1,17 @@
+---
+
+- hosts: webservers
+  user: ubuntu
+  connection: paramiko
+  gather_facts: True
+  sudo: True
+
+  tasks:
+    - name: install redis
+      action: apt pkg=$item state=installed
+      with_items:
+        - redis-server
+        - 
+
+  handler:
+    - name:
