@@ -5,7 +5,7 @@
 import multiprocessing
 
 
-def run_multiprocess(process_num, executor_hook, reap_result=False):
+def run_multiprocess(process_num, executor_hook, args, reap_result=False):
     """\brief 开启process_num个进程来执行程序，主要是使用multiprocess库来实现
     """
     pass

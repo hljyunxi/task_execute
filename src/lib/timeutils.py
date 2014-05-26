@@ -29,3 +29,8 @@ def convert_to_datetime(obj):
 def now_time():
     return datetime.now()
 
+
+def time_ceil(time):
+    """\brief 对datetime以秒级向上取整
+    """
+    return time + timedelta(seconds=1, microsecond=-time.microsecond)
