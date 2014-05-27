@@ -2,11 +2,7 @@
 #coding: utf8
 #Author: chenyunyun<hljyunxi@gmail.com>
 
-
-from store.base import BaseStore
-
-class RedisStore(BaseStore):
+class JobRunner(object):
     def __init__(self):
         pass
 
-    def
