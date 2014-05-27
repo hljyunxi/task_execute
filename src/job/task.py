@@ -2,3 +2,6 @@
 #coding: utf8
 #Author: chenyunyun<hljyunxi@gmail.com>
 
+class Task(object):
+    def __init__(self):
+        pass
