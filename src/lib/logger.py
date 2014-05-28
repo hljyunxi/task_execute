@@ -14,7 +14,7 @@ def stringify(obj):
     if isinstance(obj, str):
         return str
     elif isinstance(obj, unicode):
-        return str.encode('UTF8', '')
+        return str.encode('UTF8', 'ignore')
     else:
         return pprint.pformat(obj)
 
@@ -29,5 +29,4 @@ def log(*messages):
         for i in message.splitlines():
             with LOCK():
                 print fmt%(datetime.now().strftime(), i)
-
 
