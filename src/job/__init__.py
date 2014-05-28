@@ -6,3 +6,5 @@ class JobRunner(object):
     def __init__(self):
         pass
 
+    def _do_setup_step(self, job):
+        pass

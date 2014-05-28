@@ -16,7 +16,7 @@ def stringify(obj):
     elif isinstance(obj, unicode):
         return str.encode('UTF8', '')
     else:
-        return pprint.pormat(obj)
+        return pprint.pformat(obj)
 
 def log(*messages):
     t = threading.CurrentThread()
