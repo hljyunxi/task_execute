@@ -41,7 +41,9 @@ class JobRunner(object):
         return Job(self, yaml_data)
 
     def run(self):
-        pass
+        self._do_setup_step(self.job)
+
+        all_hosts = self.target.list_hosts(job.hosts)
 
     def _run_task(self):
         pass
