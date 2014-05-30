@@ -5,9 +5,3 @@
 class Job(object):
     def __init__(self, trigger):
         self.trigger = trigger
-
-    def __setstate__(self):
-        pass
-
-    def __getstate__(self):
-        pass
