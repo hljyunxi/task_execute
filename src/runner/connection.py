@@ -15,4 +15,10 @@ class Connection(object):
         self.runner = runner
 
     def connect(self, host, port=None):
-        pass
+        conn = None
+        module = modules.get(self.runner.transport, None)
+        if module is None:
+            raise errors.RunnerException('transport invalid')
+
+        conn = module.Connection(self.runner, host, port)
+        return conn.connect()
