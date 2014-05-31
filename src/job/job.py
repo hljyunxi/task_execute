@@ -9,7 +9,6 @@ class Job(object):
 
     def __init__(self,
         host_list = const.DEFAULT_HOST_LIST,
-        setup_cache = const.DEFAULT_SETUP_CACHE,
         sudo = False,
         sudo_user = const.DEFAULT_SUDO_USER,
         extra_vars = None,

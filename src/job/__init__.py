@@ -36,7 +36,10 @@ class JobWrap(object):
         return Job(self, **yaml_data)
 
     def _check_job_conf(self, job_conf):
-
+        assert type(job_conf) is dict, "job_conf must be dict"
+        for i in job_conf:
+            if x not in Job.VALID_KEYS:
+                raise error.JobError('{0} not is not valid'.format(x))
         return False
 
     def _do_setup_step(self, job):
