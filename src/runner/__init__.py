@@ -10,7 +10,12 @@ class Runner(object):
         self.task = task
 
         if not hosts:
-            raise errors.
+            raise errors.RunneerError('hosts must specified in runner section')
+        self.hosts = hosts
 
 
+    def run(self):
+        pass
 
+    def run_async(self, time_limit):
+        pass
