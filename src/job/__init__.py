@@ -26,8 +26,8 @@ class JobRunner(object):
         job = None
         if 'include' in job_conf:
             if len(job_conf) != 1:
-                raise errors.JobError('job conf error: include should only have\
-                        only one item')
+                raise errors.JobError('job conf error: include should only have'
+                        'only one item')
             else:
                 job = self.load_job_from_file(job_conf['include'])
         else:

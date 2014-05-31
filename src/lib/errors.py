@@ -5,4 +5,8 @@
 class NotImplementError(Exception):
     pass
 
+class JobError(Exception):
+    pass
 
+class TaskError(Exception):
+    pass

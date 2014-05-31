@@ -21,3 +21,4 @@ def hex2int(value):
         index += 8
     return sum
 
+
