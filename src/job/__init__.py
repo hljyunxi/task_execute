@@ -4,7 +4,7 @@
 
 from lib import const
 
-class JobRunner(object):
+class JobWrap(object):
     def __init__(self,
         host_list = const.DEFAULT_HOST_LIST,
         setup_cache = const.DEFAULT_SETUP_CACHE,
