@@ -2,12 +2,17 @@
 #coding: utf8
 #Author: chenyunyun<hljyunxi@gmail.com>
 
+from lib import errors
 from lib import const
 
 class JobWrap(object):
-    def __init__(self, job_conf, setup_cache=const.DEFAULT_SETUP_CACHE):
+    def __init__(self, job_conf,
+            hosts_file=const.DEFAULT_HOST_FILE,
+            setup_cache=const.DEFAULT_SETUP_CACHE):
+
+        self.target = Target(hosts_file)
+        self.job = self.load_job_from_job_conf(job_conf)
         self.setup_cache = setup_cache
-        self.job = self.load_from_job_conf(job_conf)
         self.stats = AggreateStats()
 
     def load_job_from_job_conf(self, job_conf):
@@ -40,15 +45,56 @@ class JobWrap(object):
         for i in job_conf:
             if x not in Job.VALID_KEYS:
                 raise error.JobError('{0} not is not valid'.format(x))
-        return False
-
-    def _do_setup_step(self, job):
-        pass
+        return True
 
     def run(self):
-        self._do_setup_step(self.job)
+        all_hosts = self.target.list_hosts(self.job.hosts)
 
-        all_hosts = self.target.list_hosts(job.hosts)
+        for h in all_hosts:
+            for task in self.job.tasks():
+                self._run_task(task, h)
 
-    def _run_task(self):
+            for handler in self.job.handlers():
+                if len(handlers.notified_by) > 0:
+                    self._run_task(handler, handler.notified_by, is_handler=True)
+
+    def _run_task(self, task, hosts):
+        if not isinstance(hosts, list):
+            hosts = [hosts]
+
+        results = self._run_task_internal(task, hosts)
+        if results is None:
+            results = {}
+
+        self.stats.compute(results, ignore_errors=task.ignore_errors)
+
+        if len(self.notify)>0:
+            for host, results in results.get('contacted',{}).iteritems():
+                if results.get('changed', False):
+                    for handler_name in task.notify:
+                        self._flag_handler(play.handlers(), utils.template(handler_name, task.module_vars), host)
+
+    def _flag_handler(self, handlers, handler_name, host):
+        found = False
+        for x in handlers:
+            if handler_name == x.name:
+                found = True
+                x.notified_by.append(host)
+        if not found:
+            raise errors.JobError('change handler (%s) is not defined' % handler_name)
+
+    def _run_task_internal(self, task, hosts):
+        runner = Runner(
+        )
+
+        if task.async_seconds == 0:
+            results = runner.run()
+        else:
+            results, poller = runner.run_async(task.async_seconds)
+            if task.async_poll_interval > 0:
+                results = self._async_poll(poller, task.async_seconds, task.async_poll_interval)
+
+        return results
+
+    def get_next_run_time(self):
         pass

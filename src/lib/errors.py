@@ -8,5 +8,5 @@ class NotImplementError(Exception):
 class JobError(Exception):
     pass
 
-class TaskError(Exception):
+class RunnerError(Exception):
     pass

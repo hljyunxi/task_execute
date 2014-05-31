@@ -20,13 +20,8 @@ class Job(object):
 
         self._ds = ds
 
-        hosts = ds.get('hosts')
-        if hosts is None:
-            raise errors.JobError('hosts is required in Job conf')
-        if isinstance(hosts, list):
-            hosts = ';'.join(hosts)
-        self.hosts = utils.template(hosts, job_wrap.extra_vars)
-
+        if 'hosts' not job_conf:
+            raise errors.JobError('job conf must have hosts section')
         self.remote_user  = utils.template(ds.get('user', job_wrap.remote_user), job_wrap.extra_vars)
         self.remote_port  = ds.get('port', job_wrap.remote_port)
         self.sudo         = ds.get('sudo', job_wrap.sudo)
