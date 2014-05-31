@@ -5,19 +5,10 @@
 from lib import const
 
 class JobWrap(object):
-    def __init__(self,
-        host_list = const.DEFAULT_HOST_LIST,
-        setup_cache = const.DEFAULT_SETUP_CACHE,
-        sudo = False,
-        sudo_user = const.DEFAULT_SUDO_USER,
-        extra_vars = None,
-        trigger = None):
-
-        this.setup_cache = setup_cache
-        self.trigger = trigger
-
-    def _do_setup_step(self, job):
-        pass
+    def __init__(self, job_conf, setup_cache=const.DEFAULT_SETUP_CACHE):
+        self.setup_cache = setup_cache
+        self.job = self.load_from_job_conf(job_conf)
+        self.stats = AggreateStats()
 
     def load_job_from_job_conf(self, job_conf):
         if type(job_conf) != dict:
@@ -31,14 +22,25 @@ class JobWrap(object):
             else:
                 job = self.load_job_from_file(job_conf['include'])
         else:
-            job = Job(self, job_conf)
+            if not self._check_job_conf(job_conf):
+                raise  errors.JobError('job conf error')
+            job = Job(self, **job_conf)
 
         return job
 
     def load_job_from_file(self, job_file):
         yaml_data = utils.parse_yaml_from_file(job_file)
         assert type(yaml_data) is dict, "job yaml file should be dict"
-        return Job(self, yaml_data)
+        if not self._check_job_conf(yaml_data):
+            raise  errors.JobError('job conf error')
+        return Job(self, **yaml_data)
+
+    def _check_job_conf(self, job_conf):
+
+        return False
+
+    def _do_setup_step(self, job):
+        pass
 
     def run(self):
         self._do_setup_step(self.job)
