@@ -10,3 +10,6 @@ class JobError(Exception):
 
 class RunnerError(Exception):
     pass
+
+class ConnectionError(Exception):
+    pass

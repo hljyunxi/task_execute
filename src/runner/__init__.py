@@ -18,8 +18,31 @@ class Runner(object):
 
         self.connector = Connection(self)
 
-    def _make_tmp_path(self):
-        pass
+    def _low_level_exec_command(self, conn, cmd, tmp, sudoable=False):
+        sudo_user = self.task.job.sudo_user
+        stdin, stdout, stderr = conn.exec_command(cmd, tmp, sudo_user, sudoable=sudoable)
+        if type(stdout) != str:
+            out = '\n'.join(stdout.readlines())
+        else:
+            out = stdout
+
+        if type(stderr) != str:
+            err = '\n'.join(stderr.readlines())
+        else:
+            err = stderr
+
+        return out + err
+
+    def _make_tmp_path(self, conn):
+        base_file = 'task-execute-%s-%s' % (time.time(), random.randint(0, 2**48))
+        basetmp = os.path.join('/tmp', const.DEFAULT_REMOTE_TMP, basefile)
+
+        cmd = 'mkdir -p %s' % basetmp
+        if self.task.job.remote_user != 'root':
+            cmd += ' && chmod a+rx %s' % basetmp
+        cmd += ' && echo %s' % basetmp
+        result = self._low_level_exec_command(conn, cmd, None, sudoable=False)
+        return utils.last_non_blank_line(result).strip() + '/'
 
     def _excute_common_module(self):
         pass
@@ -52,7 +75,7 @@ class Runner(object):
             result = handler(conn, tmp, module_vars=module_vars)
         else:
             if self.back_group == 0:
-                result = self._execute_normal_module()
+                result = self._execute_normal_module(conn, tmp, module_name)
             else:
                 result = self._execute_async_module()
 
@@ -75,8 +98,27 @@ class Runner(object):
             msg = traceback.format_exc()
             return ReturnData(host=host, comm_ok=False, result=dict(failed=True, msg=msg))
 
-    def _partition_results(self):
-        pass
+    def _partition_results(self, results):
+        if results is None:
+            return None
+
+        results_for_ret = {contacted={}, dark={}}
+        for result in results:
+            host = result.host
+            if not host:
+                raise errors.RunnerException('host not set for return data')
+            if result.comm_ok():
+                results_for_ret['contacted'][host] = result
+            else:
+                results_for_ret['dark'][host] = result
+
+         for host in self.hosts:
+             if not any((host in results_for_ret['contacted'],\
+                     host in results_for_ret['dark'])):
+
+                 results_for_ret['dark'][host] = {}
+
+         return results_for_ret
 
     def run(self):
         if len(self.hosts)==0:

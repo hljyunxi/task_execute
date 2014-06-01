@@ -4,5 +4,9 @@
 
 
 class Connection(object):
-    def __init__(self):
-        pass
+    def __init__(self, runner, host, port):
+        self.runner = runner
+        self.host = host
+        self.port = port
+
+
