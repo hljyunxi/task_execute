@@ -19,4 +19,3 @@ class Target(object):
     def fnmatch(self, pattern):
         pass
 
-

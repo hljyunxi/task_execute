@@ -13,9 +13,18 @@ class Runner(object):
 
         if not hosts:
             raise errors.RunnerError('hosts must specified in runner section')
+
+        connection_config = task.job.connection_config
+        self.sudo = utils.default(connection_config.get('sudo'), lambda: False)
+        self.sudo_user = utils.default(connection_config.get('sudo_user'), None)
+        self.sudo_pass = utils.default(connection_config.get('sudo_pass'), None)
+        self.remote_port = utils.default(connection_config.get('remote_port'),\
+                const.DEFAULT_REMOTE_PORT)
+        self.private_key_file = utils.default(connection_config.get('private_key_file'),\
+                const.PRIVATE_KEY_FILE)
+
         self.hosts = hosts
         self.setup_cache = setup_cache
-
         self.connector = Connection(self)
 
     def _low_level_exec_command(self, conn, cmd, tmp, sudoable=False):
