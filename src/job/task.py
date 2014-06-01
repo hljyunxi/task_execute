@@ -45,4 +45,7 @@ class Task(object):
         return self._module_args
 
     def get_module_vars(self):
-        return None
+        if not self.hasattr('_module_vars'):
+            self._module_vars = list.__add__()
+
+        return self._module_vars

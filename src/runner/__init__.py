@@ -5,17 +5,92 @@
 from lib import const
 from lib import errors
 
+from connection import Connection
+
 class Runner(object):
-    def __init__(self, task, hosts):
+    def __init__(self, task, hosts, setup_cache):
         self.task = task
 
         if not hosts:
-            raise errors.RunneerError('hosts must specified in runner section')
+            raise errors.RunnerError('hosts must specified in runner section')
         self.hosts = hosts
+        self.setup_cache = setup_cache
 
+        self.connector = Connection(self)
+
+    def _make_tmp_path(self):
+        pass
+
+    def _excute_common_module(self):
+        pass
+
+    def _excute_async_module(self):
+        pass
+
+    def _excute_internal(self, host):
+        module_vars = self.task.module_vars()
+
+        only_if = utils.template(self.task.only_if, module_vars)
+        if not eval(only_if):
+            result = utils.jsonify(dict(skipped=True))
+            return ReturnData(host=host, result=result)
+
+        module_name = utils.template(self.module_name, module_vars)
+        if module_name != 'raw':
+            tmp_path = self._make_tmp_path()
+
+        try:
+            port = self.task.job.port
+            conn = self.connector.connect(host, port)
+        except errors.ConnectionError, e:
+            result = dict(failed=True, msg="FAILED: %s" % str(e))
+            return ReturnData(host=host, comm_ok=False, result=result)
+
+        result = None
+        handler = getattr(self, "_execute_%s" % self.module_name, None)
+        if handler:
+            result = handler(conn, tmp, module_vars=module_vars)
+        else:
+            if self.back_group == 0:
+                result = self._execute_normal_module()
+            else:
+                result = self._execute_async_module()
+
+        if module_name != 'raw':
+            self._delete_remote_file(conn, tmp)
+        conn.close()
+
+        return result
+
+    def _excute(self, host):
+        try:
+            ret = self._excute_internal(host)
+            if type(ret) != ReturnData:
+                raise errors.Exception('return type error')
+            return ret
+        except errors.RunnerError, e:
+            msg = str(e)
+            return ReturnData(host=host, comm_ok=False, result=dict(failed=True, msg=msg))
+        except Exception:
+            msg = traceback.format_exc()
+            return ReturnData(host=host, comm_ok=False, result=dict(failed=True, msg=msg))
+
+    def _partition_results(self):
+        pass
 
     def run(self):
-        pass
+        if len(self.hosts)==0:
+            return dict(contacted={}, dark={})
+
+        results = None
+        if self.task.job.forks > 0:
+            results = self.prallel_exec(self.hosts)
+        else:
+            results = [self._excute(h) for h in self.hosts]
+
+        return self._partition_results(results)
 
     def run_async(self, time_limit):
-        pass
+        self.backgroup = time_limit
+        result = self.run()
+        return results, poller.AsyncPoller(results, self)

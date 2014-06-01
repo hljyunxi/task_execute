@@ -66,8 +66,7 @@ class Job(object):
         return self._handlers
 
     def _get_vars(self, ds, job_wrap):
-        vars = job_wrap.global_vars.copy()
-
+        vars = {}
         vars_ds = ds.get('vars', {})
 
         if type(vars_ds) not in [dict, list]:
@@ -79,5 +78,4 @@ class Job(object):
         else:
             vars.update(vars_ds)
 
-        vars.update(job_wrap.extra_vars)
         return vars
