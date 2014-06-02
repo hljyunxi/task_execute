@@ -16,6 +16,9 @@ class ReturnData(object):
             raise RunnerError('returndata host is not set')
 
         self.result = result
+        if self.result in [str, unicode]:
+            self.result = utils.parse_json(self.result)
+
         self.comm_ok = comm_ok
 
     def comm_ok(self):

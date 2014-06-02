@@ -52,10 +52,10 @@ class Runner(object):
         result = self._low_level_exec_command(conn, cmd, None, sudoable=False)
         return utils.last_non_blank_line(result).strip() + '/'
 
-    def _excute_common_module(self):
+    def _copy_module(self, conn, tmp, module_name, args):
         pass
 
-    def _excute_async_module(self):
+    def _execute_module_internal(self):
         pass
 
     def _excute_internal(self, host):
@@ -82,10 +82,7 @@ class Runner(object):
         if handler:
             result = handler(conn, tmp, module_vars=module_vars)
         else:
-            if self.back_group == 0:
-                result = self._execute_normal_module(conn, tmp, module_name)
-            else:
-                result = self._execute_async_module()
+            result = self._execute_module_internal()
 
         if module_name != 'raw':
             self._delete_remote_file(conn, tmp)
@@ -139,8 +136,3 @@ class Runner(object):
             results = [self._excute(h) for h in self.hosts]
 
         return self._partition_results(results)
-
-    def run_async(self, time_limit):
-        self.backgroup = time_limit
-        result = self.run()
-        return results, poller.AsyncPoller(results, self)
