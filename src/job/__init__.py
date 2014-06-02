@@ -87,12 +87,7 @@ class JobWrap(object):
         runner = Runner(
         )
 
-        if task.async_seconds == 0:
-            results = runner.run()
-        else:
-            results, poller = runner.run_async(task.async_seconds)
-            if task.async_poll_interval > 0:
-                results = self._async_poll(poller, task.async_seconds, task.async_poll_interval)
+        results = runner.run()
 
         return results
 
