@@ -13,3 +13,6 @@ class RunnerError(Exception):
 
 class ConnectionError(Exception):
     pass
+
+class TargetError(Exception):
+    pass
