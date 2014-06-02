@@ -3,6 +3,7 @@
 #Author: chenyunyun<hljyunxi@gmail.com>
 
 import array, binascii
+import impl
 
 def default(value, function):
     if values is None:
@@ -21,4 +22,10 @@ def hex2int(value):
         index += 8
     return sum
 
-
+def import_plugins(plugin_dir):
+    results = {}
+    for path in glob.glob(os.path.join(plugin_dir, '*.py')):
+        name, ext = name, ext = os.path.splitext(os.path.basename(path))
+        if not name.startswith('_'):
+            modules[name] = impl.load_source(name, path)
+    return results

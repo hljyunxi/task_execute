@@ -34,6 +34,9 @@ class Target(object):
     def get_groups(self):
         return self._groups
 
+    def _get_hosts(self, pattern):
+        pass
+
     def get_hosts(self, pattern):
         patterns = pattern.replace(';', ':').split(':')
 
