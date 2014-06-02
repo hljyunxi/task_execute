@@ -3,6 +3,7 @@
 #Author: chenyunyun<hljyunxi@gmail.com>
 
 from lib import const
+from lib import errors
 
 class Target(object):
 
@@ -19,3 +20,5 @@ class Target(object):
     def fnmatch(self, pattern):
         pass
 
+    def is_file(self):
+        pass
