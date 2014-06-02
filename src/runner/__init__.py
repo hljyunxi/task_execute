@@ -8,13 +8,12 @@ from lib import errors
 from connection import Connection
 
 class Runner(object):
-    def __init__(self, task, hosts, setup_cache):
+    def __init__(self, task, hosts, connection_config, setup_cache):
         self.task = task
 
         if not hosts:
             raise errors.RunnerError('hosts must specified in runner section')
 
-        connection_config = task.job.connection_config
         self.sudo = utils.default(connection_config.get('sudo'), lambda: False)
         self.sudo_user = utils.default(connection_config.get('sudo_user'), None)
         self.sudo_pass = utils.default(connection_config.get('sudo_pass'), None)

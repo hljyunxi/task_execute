@@ -9,6 +9,8 @@ import os.path
 dirname = os.path.dirname(__file__)
 modules = utils.import_plugins(os.path.join(dirname, 'connection_plugins'))
 
+modules['paramiko'] = modules['paramiko_ssh']
+del modules['paramiko_ssh']
 
 class Connection(object):
     def __init__(self, runner):
