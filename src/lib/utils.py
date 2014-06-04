@@ -5,6 +5,7 @@
 import array, binascii
 import impl
 import shlex
+import jinja2
 
 def default(value, function):
     if values is None:
@@ -54,7 +55,17 @@ def template(text, vars):
 
 
 def template_from_file(file, vars):
-    pass
+    environment = jinja2.Environment(loader=jinja2.FileSystemLoader(basedir), trim_blocks=False)
+    environment.filters['to_json'] = json.dumps
+    environment.filters['from_json'] = json.loads
+    data = codecs.open(path_dwim(basedir, path), encoding="utf8").read()
+    t = environment.from_string(data)
+    vars = vars.copy()
+    res = t.render(vars)
+    if data.endswith('\n') and not res.endswith('\n'):
+        res += '\n'
+    return template(data, vars)
+
 
 _LIST_RE = re.compile(r"(\w+)\[(\d+)\]")
 def _var_lookup(name, vars):
