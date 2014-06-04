@@ -16,3 +16,6 @@ class ConnectionError(Exception):
 
 class TargetError(Exception):
     pass
+
+class TemplateError(Exception):
+    pass
