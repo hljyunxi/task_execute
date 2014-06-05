@@ -15,4 +15,4 @@ class SimpleTrigger(object):
 
     def __repr__(self):
         return '<%s(run_date=%s)>' % (self.__class__.__name__,\
-                str(self.run_date))
+                repr(self.run_date))
