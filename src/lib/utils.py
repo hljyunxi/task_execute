@@ -120,3 +120,17 @@ def parse_kv(args):
                 k, v = i.split('=', 1)
                 options[k] = v
     return options
+
+
+def parse_yaml(data):
+    return yaml.load(data)
+
+
+def parse_yaml_from_file(file_path):
+    try:
+        data = file(path).read()
+        return parse_yaml(data)
+    except IOError:
+        raise errors.ParseError('could not parse yaml file: %s' % file_path)
+    except yaml.YAMLError, exc:
+        raise errors.ParseError('could not parse yaml file: %s' % file_path)
