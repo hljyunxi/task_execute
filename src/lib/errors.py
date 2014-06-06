@@ -19,3 +19,6 @@ class TargetError(Exception):
 
 class TemplateError(Exception):
     pass
+
+class SchedulerError(Exception):
+    pass
