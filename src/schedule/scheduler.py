@@ -4,15 +4,19 @@
 
 from threading import Thread, Event, Lock
 
+from lib import errors
+
 class Scheduler(object):
-    def __init__(self, ):
-        pass
+    def __init__(self, job_file, config_file):
+        self._pending_jobs = []
+        self._started = False
 
     def initialize(self):
         pass
 
     def start(self):
-        pass
+        if self._started:
+            raise errors.SchedulerError('already started')
 
     def stop(self):
         pass

@@ -3,6 +3,7 @@
 #Author: chenyunyun<hljyunxi@gmail.com>
 
 from datetime import datetime, timedelta
+from math import ceil, floor
 
 class IntervalTrigger(object):
     def __init__(self, interval, start_date=None):
