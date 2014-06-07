@@ -85,6 +85,7 @@ class JobWrap(object):
                     for handler_name in task.notify:
                         self._flag_handler(play.handlers(), utils.template(handler_name, task.module_vars), host)
 
+
     def _flag_handler(self, handlers, handler_name, host):
         found = False
         for x in handlers:
@@ -94,6 +95,7 @@ class JobWrap(object):
         if not found:
             raise errors.JobError('change handler (%s) is not defined' % handler_name)
 
+
     def _run_task_internal(self, task, hosts):
         runner = Runner(
         )
@@ -102,8 +104,10 @@ class JobWrap(object):
 
         return results
 
+
     def get_next_run_time(self):
         pass
+
 
     @property
     def trigger(self):
@@ -111,3 +115,11 @@ class JobWrap(object):
             pass
 
         return self._trigger
+
+
+    def __getstate__(self):
+        pass
+
+
+    def __setstate__(self, state):
+        pass
