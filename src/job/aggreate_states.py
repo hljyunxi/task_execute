@@ -4,4 +4,21 @@
 
 
 class AggregateStates(object):
-    pass
+    def __init__(self):
+        self.processed = {}
+        self.failures = {}
+        self.ok = {}
+        self.dark = {}
+
+
+    def _increment(self, host):
+        pass
+
+
+    def compute_results(self, results):
+        pass
+
+
+    def summarize(self):
+        pass
+

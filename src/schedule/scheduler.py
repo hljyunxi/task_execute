@@ -10,6 +10,7 @@ import trigger
 TRIGGER_MAP = {
     'simple': '_add_simple_job',
     'interval': '_add_interval_job',
+    'crontab': '_add_crontab_job',
 }
 
 class Scheduler(object):

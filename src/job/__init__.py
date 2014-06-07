@@ -104,3 +104,10 @@ class JobWrap(object):
 
     def get_next_run_time(self):
         pass
+
+    @property
+    def trigger(self):
+        if not hasattr(self, '_trigger'):
+            pass
+
+        return self._trigger
