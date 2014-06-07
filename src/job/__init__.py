@@ -10,8 +10,17 @@ class JobWrap(object):
             hosts_file=const.DEFAULT_HOST_FILE,
             setup_cache=const.DEFAULT_SETUP_CACHE):
 
+        #保存配置相关信息，以便于序列化
+        self._job_conf = job_conf
+
+        #连接相关信息
+        self._conn_config = job_conf.get('conn_config', {})
+
+        #trigger相关
+        self._trigger_config = job_conf.get('trigger_config', {})
+
         self.target = Target(hosts_file)
-        self.job = self.load_job_from_job_conf(job_conf)
+        self.job = self.load_job_from_job_conf(job_config.get('job_config', {}))
         self.setup_cache = setup_cache
         self.stats = AggreateStats()
 
@@ -47,6 +56,7 @@ class JobWrap(object):
                 raise error.JobError('{0} not is not valid'.format(x))
         return True
 
+
     def run(self):
         all_hosts = self.target.list_hosts(self.job.hosts)
 
@@ -57,6 +67,7 @@ class JobWrap(object):
             for handler in self.job.handlers():
                 if len(handlers.notified_by) > 0:
                     self._run_task(handler, handler.notified_by, is_handler=True)
+
 
     def _run_task(self, task, hosts):
         if not isinstance(hosts, list):
