@@ -8,7 +8,7 @@ from lib import errors
 from connection import Connection
 
 class Runner(object):
-    def __init__(self, task, hosts, connection_config, setup_cache):
+    def __init__(self, task, hosts, connection_config):
         self.task = task
 
         if not hosts:
@@ -23,7 +23,6 @@ class Runner(object):
                 const.PRIVATE_KEY_FILE)
 
         self.hosts = hosts
-        self.setup_cache = setup_cache
         self.connector = Connection(self)
 
     def _low_level_exec_command(self, conn, cmd, tmp, sudoable=False):

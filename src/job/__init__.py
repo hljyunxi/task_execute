@@ -19,8 +19,12 @@ class JobWrap(object):
         #trigger相关
         self._trigger_config = job_conf.get('trigger_config', {})
 
+        #host相关信息
         self.target = Target(hosts_file)
+
+        #job
         self.job = self.load_job_from_job_conf(job_config.get('job_config', {}))
+
         self.setup_cache = setup_cache
         self.stats = AggreateStats()
 

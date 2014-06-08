@@ -134,3 +134,9 @@ def parse_yaml_from_file(file_path):
         raise errors.ParseError('could not parse yaml file: %s' % file_path)
     except yaml.YAMLError, exc:
         raise errors.ParseError('could not parse yaml file: %s' % file_path)
+
+
+def expand_user_path(path):
+    if path:
+        path = os.path.expanduser(path)
+    return path
